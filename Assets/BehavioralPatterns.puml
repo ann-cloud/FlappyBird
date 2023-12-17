@@ -1,0 +1,103 @@
+@startuml
+class Context
+    {
+        -_state: State;
+
+        +<<constructor>>Context(state: State);
+        +void TransitionTo(state: State);
+        +Request() : GameObject
+    }
+abstract class State
+    {
+         #_context: Context;
+    
+         +void SetContext(context: Context);
+         +{abstract} Handle(): GameObject;
+    }
+        
+class EasyPipeStateA
+    {
+        +override Handle(): GameObject;
+    }
+    
+interface ICommand
+        {
+            +void Execute();
+        }
+        
+class ComplexCommand 
+            {
+                +_logic: LogicScript;
+                +_toAdd: int;
+        
+                +<<constructor>>ComplexCommand(logic: LogicScript, toAdd: int);
+                +void Execute();
+            }
+    
+   class LogicScript
+   {
+       +playScore: int;
+       +highScore: int;
+       +scoreText: Text;
+       +gameOverScreen: GameObject;
+       
+       +void addScore(toAdd: int);
+       +void restartGame();
+       +void gameOver();
+       +void changeCharacter();
+   }
+class Invoker
+       {
+           -_onStart: ICommand;
+   
+           +void SetOnStart(command: ICommand);
+           +void AddScoreOnMoveThrough();
+       }
+   
+       interface IObserver
+       {
+           +void UpdatePipes(subject: ISubject);
+       }
+           interface ISubject
+           {
+               +void Attach(observer: IObserver);
+               +void Detach(observer: IObserver);
+               +void Notify();
+           }
+           
+           class BirdScript
+           {
+               +myRigidbody: Rigidbody2D;
+               +flapStrength: float;
+               +logic: LogicScript;
+               +birdIsAlive: bool = true;
+               +{static} Singleton { get; private set; } : BirdScript
+               +{field}_observers: List<IObserver> = new List<IObserver>();
+               
+               +void Attach(observer: IObserver);
+               +void Detach(observer: IObserver);
+               +void Notify();
+               -void Awake();
+               -void Start();
+               -void Update();
+               -void OnCollisionEnter2D(col: Collision2D);
+           }
+           class PipeMoveScript
+           {
+               +moveSpeed: float = 5;
+               +deadZone: float = -45;
+           
+               -void Start();
+               -void Update();           
+               +void UpdatePipes(subject: ISubject);
+           }
+State <|.. EasyPipeStateA
+Context o- State
+Context -o State
+ComplexCommand o- LogicScript
+ICommand <|.. ComplexCommand 
+Invoker o- ICommand
+ISubject <|.. BirdScript 
+BirdScript o- IObserver : 1     N
+IObserver <|.. PipeMoveScript
+@enduml

@@ -1,0 +1,54 @@
+@startuml
+class BirdScript
+{
+    +myRigidbody: Rigidbody2D ;
+    +flapStrength: float;
+    +logic: LogicScript;
+    +birdIsAlive = true: bool;
+    +static Singleton { get; private set; } :  BirdScript 
+
+    -void Awake();
+    -void Start();
+    -void Update();
+    -void OnCollisionEnter2D(col: Collision2D);
+}
+
+interface Prototype
+{
+    +Clone(position: Vector3): GameObject;
+}
+
+class PipePrototype
+{
+    -_pipePrefab: GameObject;
+    +<<constructor>>PipePrototype(prototype: GameObject);
+    +Clone(position: Vector3): GameObject;
+}
+
++abstract class PipeAbstractFactory
+{
+    +abstract CreatePipe(): GameObject;
+}
+
++class EasyPipeFactory
+{
+    +<<override>> CreatePipe(): GameObject;
+}
+
++class HardPipeFactory
+{
+    +<<override>> CreatePipe(): GameObject;
+}
+
+class Client
+{
+
+}
+
+Client --> BirdScript
+Client --> Prototype
+Client --> PipeAbstractFactory
+Prototype <|.. PipePrototype
+PipeAbstractFactory <|.. EasyPipeFactory
+PipeAbstractFactory <|.. HardPipeFactory
+@enduml

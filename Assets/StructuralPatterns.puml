@@ -1,0 +1,72 @@
+@startuml
+
+class Facade 
+{
+        -readonly _logic: LogicScript;
+        +<<constructor>>Facade(logic: LogicScript);
+        +void Operation();
+}
+
+class LogicScript
+{
+    +playScore: int;
+    +highScore: int;
+    +scoreText: Text;
+    +gameOverScreen: GameObject;
+    
+    +void addScore(toAdd: int);
+    +void restartGame();
+    +void gameOver();
+    +void changeCharacter();
+}
+
+interface IEasyMode
+{
+    +void load();
+}
+
+class EasyMode
+{
+    +void load();
+}
+
+abstract class BaseDecorator
+{
+        -_moderateMode: IEasyMode;
+
+        +<<constructor>>BaseDecorator(moderateMode: IEasyMode);
+        +void load();
+}
+
+class ConcreteDecorator
+{
+        +ConcreteDecorator(moderateMode: IEasyMode);
+        +new void load();
+        +void extra();
+}
+
+interface ILogic
+{
+        +void gameOver();
+}
+
+class Proxy
+{
+        +readonly _realLogic: LogicScript;
+
+        +<<constructor>>Proxy(realLogic: LogicScript);
+        +checkState(): bool;
+        +void gameOver();
+}
+
+BaseDecorator <|-- ConcreteDecorator
+IEasyMode <|-- BaseDecorator
+IEasyMode <|-- EasyMode
+ILogic <|-- LogicScript
+ILogic <|-- Proxy
+Facade o-- LogicScript
+Proxy o-- LogicScript
+Client --> Facade
+Client --> IEasyMode
+Client --> ILogic
+@enduml
