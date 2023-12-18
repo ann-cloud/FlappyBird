@@ -1,6 +1,5 @@
 # FlappyBird
 
-Overview
 This Unity project is a simple implementation of the classic Flappy Bird game. The game features a bird that the player controls by tapping the screen or pressing a key to navigate through a series of pipes. The objective is to keep the bird flying for as long as possible without colliding with the pipes.
 
 How to Play
